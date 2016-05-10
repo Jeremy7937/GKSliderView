@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong)HeaderView *headerView;
 @property (nonatomic, strong)GKSliderView *sliderView;
+@property (nonatomic, strong)UIView *gkNavBar;
 
 @end
 
@@ -33,6 +34,31 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self setUpHeaderView];
     [self setUpSliderView];
+    [self setUpNavBar];
+}
+
+- (void)setUpNavBar {
+    self.gkNavBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenSize.width, 64)];
+    self.gkNavBar.backgroundColor = [UIColor grayColor];
+    self.gkNavBar.alpha = 0;
+    [self.view addSubview:self.gkNavBar];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kScreenSize.width/2 - 50, 22, 100, 40)];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [UIFont boldSystemFontOfSize:17];
+    titleLabel.text = @"张三";
+    titleLabel.tintColor = [UIColor blackColor];
+    [self.gkNavBar addSubview:titleLabel];
+    
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    backBtn.frame = CGRectMake(8, 32, 12, 22);
+    [backBtn addTarget:self action:@selector(backBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.gkNavBar addSubview:backBtn];
+}
+
+- (void)backBtnClick:(UIButton *)btn {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)setUpHeaderView {
@@ -89,8 +115,11 @@
 
 
 - (void)changeFrameWithPoint:(CGPoint )point {
-   // point = CGPointMake(0, 0);
+    
+    self.gkNavBar.alpha = point.y / 186.0;
+
     if (point.y <= 186) {
+        
         CGRect headerFrame = self.headerView.frame;
         headerFrame.origin.y = -point.y;
         self.headerView.frame = headerFrame;
